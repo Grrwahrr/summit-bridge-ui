@@ -13,8 +13,8 @@ import "./globals.css";
 import { NavBar } from "@/components/layout/nav-bar";
 
 export const metadata: Metadata = {
-  title: "Polkadot Next.js Starter",
-  description: "A starter project for building Polkadot dApps with Next.js.",
+  title: "Summit Bridge",
+  description: "Summit Bridge Aggregator",
 };
 
 export default function RootLayout({

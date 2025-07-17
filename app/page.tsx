@@ -847,8 +847,10 @@ export default function Home() {
                           return current.tokensReceived > topValue.tokensReceived ? current : topValue;
                         });
 
-                        const isFastest = quote.id === fastestQuote.id;
-                        const isTopValue = quote.id === topValueQuote.id;
+                        // Determine if this quote should be recommended based on current sorting
+                        const isRecommended = sortBy === 'tokensReceived' 
+                          ? quote.id === topValueQuote.id 
+                          : quote.id === fastestQuote.id;
 
                         return (
                           <tr
@@ -866,14 +868,9 @@ export default function Home() {
                                   )}
                                 </div>
                                 <div className="flex flex-col gap-1">
-                                  {isFastest && (
-                                    <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
-                                      Fastest
-                                    </span>
-                                  )}
-                                  {isTopValue && (
-                                    <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                                      Top Value
+                                  {isRecommended && (
+                                    <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">
+                                      Recommended
                                     </span>
                                   )}
                                 </div>

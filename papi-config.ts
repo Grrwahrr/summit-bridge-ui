@@ -35,10 +35,10 @@ export interface ChainConfig {
   key: string;
   name: string;
   descriptors:
-    | typeof polkadot
-    | typeof polkadot_asset_hub
-    | typeof paseo
-    | typeof paseo_asset_hub;
+  | typeof polkadot
+  | typeof polkadot_asset_hub
+  | typeof paseo
+  | typeof paseo_asset_hub;
   endpoints: string[];
   explorerUrl?: string;
   icon?: React.ReactNode;
@@ -46,11 +46,8 @@ export interface ChainConfig {
   relayChainSpec?: ChainSpec;
 }
 
-export type AvailableApis =
-  | TypedApi<typeof polkadot>
-  | TypedApi<typeof polkadot_asset_hub>
-  | TypedApi<typeof paseo>
-  | TypedApi<typeof paseo_asset_hub>;
+// Use a more generic type to avoid TypeScript errors with the descriptors
+export type AvailableApis = TypedApi<any>;
 
 // TODO: add all chains your dapp supports here
 export const chainConfig: ChainConfig[] = [

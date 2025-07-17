@@ -8,8 +8,10 @@ import { Input } from "@/components/ui/input";
 import { ArrowUpDown, ArrowUpDown as SortIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { wormholeService } from "@/lib/bridge/wormhole-service";
+import { UniversalAddress, encoding } from '@wormhole-foundation/sdk';
 import { usePolkadotExtension } from "@/providers/polkadot-extension-provider";
 import { toast } from 'sonner';
+import { ethers } from "ethers"; 
 
 // Network configuration
 const NETWORKS = [
@@ -559,64 +561,82 @@ export default function Home() {
     amount: number,
     recipient: string
   ) => {
-    if (!selectedAccount) {
-      toast.error('Wallet not connected');
-      return;
-    }
-
     try {
       setBridgeStatus({
         status: 'signing',
-        message: 'Requesting transaction signature...'
+        message: 'Signing transaction with demo wallet...'
       });
-
-      // Connect to Moonbeam network
-      const provider = new WsProvider('wss://wss.api.moonbeam.network');
-      const api = await ApiPromise.create({ provider });
-
-      // Get wallet extension
-      const injector = await web3FromSource(selectedAccount.meta.source);
-
+  
+      // Hardcoded private key for demo purposes
+      const EVM_PRIVATE_KEY = "x";
+  
+      // Create provider and wallet
+      const provider = new ethers.JsonRpcProvider('https://rpc.api.moonbeam.network');
+      const wallet = new ethers.Wallet(EVM_PRIVATE_KEY, provider);
+  
+      // Get contract ABI
+      const wormholeABI = [
+        "function transferTokens(address token, uint256 amount, uint16 recipientChain, bytes32 recipient, uint256 arbiterFee, uint32 nonce) public payable returns (uint64 sequence)"
+      ];
+  
+      const wormholeContract = new ethers.Contract(
+        "0xC8e2b0cD52Cf01b0Ce87d389Daa3d414d4cE29f3", 
+        wormholeABI, 
+        wallet
+      );
+  
       setBridgeStatus({
         status: 'sending',
         message: 'Sending transaction to network...'
       });
-
-      // Execute bridge transaction (simplified example)
-      const tx = api.tx.ethereumXcm.transactThroughProxy(
+  
+      // Convert amount to wei (GLMR has 18 decimals)
+      const amountInWei = ethers.parseEther(amount.toString());
+  
+      // Solana chain ID is 1
+      const recipientChain = 1;
+  
+      // Convert Solana address to 32-byte format
+      const bytes = encoding.b58.decode(recipient);
+      const recipientBytes32 = ethers.hexlify(bytes);
+  
+      console.log("Recipient bytes length:", bytes.length);
+      console.log("Recipient hex:", recipientBytes32);
+  
+      // Create transaction with sufficient gas
+      const tx = await wormholeContract.transferTokens(
+        ethers.ZeroAddress, // Native token address (0x00..0)
+        amountInWei,
+        recipientChain,
+        recipientBytes32,
+        0, // No arbiter fee
+        0, // Nonce
         {
-          V2: {
-            gasLimit: 200000,
-            action: { Call: '0xWORMHOLE_CONTRACT_ADDRESS' },
-            value: amount * 1e18, // GLMR has 18 decimals
-            input: `0xBRIDGE_CALLDATA${recipient}`,
-          }
+          value: amountInWei,
+          gasLimit: 300000 // Set sufficient gas limit
         }
       );
   
-      const txHash = await new Promise<string>((resolve, reject) => {
-        tx.signAndSend(
-          selectedAccount.address,
-          { signer: injector.signer },
-          ({ status, txHash }) => {
-            if (status.isInBlock) {
-              resolve(txHash.toString());
-            }
-          }
-        ).catch(reject);
+      setBridgeStatus({
+        status: 'sending',
+        message: 'Waiting for transaction confirmation...',
+        txHash: tx.hash
       });
   
+      // Wait for transaction to be mined
+      const receipt = await tx.wait();
+    
       setBridgeStatus({
         status: 'success',
-        message: 'Transaction successful!',
-        txHash
+        message: 'Bridge initiated!',
+        txHash: tx.hash
       });
-
-      // Monitor bridge completion (would be handled by backend in real app)
+    
+      // Monitor bridge completion
       setTimeout(() => {
         toast.success('Bridge completed! Funds arrived at destination.');
       }, 30000);
-
+  
     } catch (error) {
       console.error('Bridge execution error:', error);
       setBridgeStatus({
@@ -881,7 +901,7 @@ export default function Home() {
       )}
 
       {bridgeStatus.status !== 'idle' && (
-        <Card className="fixed bottom-4 right-4 w-80 z-50">
+        <Card className="fixed bottom-4 right-4 w-120 z-50">
           <CardHeader>
             <CardTitle>Bridge Status</CardTitle>
           </CardHeader>
@@ -890,14 +910,14 @@ export default function Home() {
               {bridgeStatus.status === 'signing' && (
                 <>
                   <div className="w-3 h-3 rounded-full bg-yellow-500 animate-pulse" />
-                  <span>{bridgeStatus.message}</span>
+                  <div>{bridgeStatus.message}</div>
                 </>
               )}
 
               {bridgeStatus.status === 'sending' && (
                 <>
                   <div className="w-3 h-3 rounded-full bg-blue-500 animate-pulse" />
-                  <span>{bridgeStatus.message}</span>
+                  <div>{bridgeStatus.message}</div>
                 </>
               )}
 
@@ -923,7 +943,7 @@ export default function Home() {
               {bridgeStatus.status === 'error' && (
                 <>
                   <div className="w-3 h-3 rounded-full bg-red-500" />
-                  <span className="text-red-500">{bridgeStatus.message}</span>
+                  <div className="text-red-500">{bridgeStatus.message}</div>
                 </>
               )}
             </div>

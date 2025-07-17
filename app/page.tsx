@@ -541,7 +541,7 @@ export default function Home() {
       if (quote.id === 'wormhole') {
         // For demo purposes - in real app you would collect recipient address
         const recipient = '8F8Amu87zBsNqxzSQipQUVmvVwwhJ9tgpTwtu9F4qXPx';
-        
+
         await executeWormholeBridge(
           parseFloat(amount) || 1,
           recipient
@@ -563,25 +563,25 @@ export default function Home() {
       toast.error('Wallet not connected');
       return;
     }
-  
+
     try {
       setBridgeStatus({
         status: 'signing',
         message: 'Requesting transaction signature...'
       });
-  
+
       // Connect to Moonbeam network
       const provider = new WsProvider('wss://wss.api.moonbeam.network');
       const api = await ApiPromise.create({ provider });
-  
+
       // Get wallet extension
       const injector = await web3FromSource(selectedAccount.meta.source);
-      
+
       setBridgeStatus({
         status: 'sending',
         message: 'Sending transaction to network...'
       });
-  
+
       // Execute bridge transaction (simplified example)
       const tx = api.tx.ethereumXcm.transactThroughProxy(
         {
@@ -611,12 +611,12 @@ export default function Home() {
         message: 'Transaction successful!',
         txHash
       });
-      
+
       // Monitor bridge completion (would be handled by backend in real app)
       setTimeout(() => {
         toast.success('Bridge completed! Funds arrived at destination.');
       }, 30000);
-  
+
     } catch (error) {
       console.error('Bridge execution error:', error);
       setBridgeStatus({
@@ -640,26 +640,26 @@ export default function Home() {
         <p className="text-lg text-muted-foreground">Your crypto where you need it, when you need it!</p>
       </div>
 
-      <Card className="w-full max-w-lg">
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            <ChainSelector
-              label="From Chain"
-              selectedChain={sourceChain}
-              onChainSelect={handleSourceChainChange}
-              excludeChain={destinationChain?.id}
-            />
-            <AssetSelector
-              label="Asset"
-              selectedAsset={sourceAsset}
-              onAssetSelect={(asset) => {
-                setSourceAsset(asset);
-                setTimeout(() => checkAndFetchQuotes(), 100);
-              }}
-              networkId={sourceChain?.id}
-              disabled={!sourceChain}
-            />
-          </div>
+        <Card className="w-full max-w-lg">
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <ChainSelector
+                label="From Chain"
+                selectedChain={sourceChain}
+                onChainSelect={handleSourceChainChange}
+                excludeChain={destinationChain?.id}
+              />
+              <AssetSelector
+                label="Asset"
+                selectedAsset={sourceAsset}
+                onAssetSelect={(asset) => {
+                  setSourceAsset(asset);
+                  setTimeout(() => checkAndFetchQuotes(), 100);
+                }}
+                networkId={sourceChain?.id}
+                disabled={!sourceChain}
+              />
+            </div>
 
           <div className="flex justify-center">
             <Button
@@ -880,58 +880,56 @@ export default function Home() {
         </div>
       )}
 
-      <Card className="fixed bottom-4 right-4 w-80 z-50">
-        <CardHeader>
-          <CardTitle>Bridge Status</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-3">
-            {bridgeStatus.status === 'idle' && (
-              <div className="text-muted-foreground">No transaction in progress</div>
-            )}
-            
-            {bridgeStatus.status === 'signing' && (
-              <>
-                <div className="w-3 h-3 rounded-full bg-yellow-500 animate-pulse" />
-                <span>{bridgeStatus.message}</span>
-              </>
-            )}
-            
-            {bridgeStatus.status === 'sending' && (
-              <>
-                <div className="w-3 h-3 rounded-full bg-blue-500 animate-pulse" />
-                <span>{bridgeStatus.message}</span>
-              </>
-            )}
-            
-            {bridgeStatus.status === 'success' && (
-              <>
-                <div className="w-3 h-3 rounded-full bg-green-500" />
-                <div>
-                  <p>{bridgeStatus.message}</p>
-                  {bridgeStatus.txHash && (
-                    <a 
-                      href={`https://moonscan.io/tx/${bridgeStatus.txHash}`} 
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 text-sm"
-                    >
-                      View transaction
-                    </a>
-                  )}
-                </div>
-              </>
-            )}
-            
-            {bridgeStatus.status === 'error' && (
-              <>
-                <div className="w-3 h-3 rounded-full bg-red-500" />
-                <span className="text-red-500">{bridgeStatus.message}</span>
-              </>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+      {bridgeStatus.status !== 'idle' && (
+        <Card className="fixed bottom-4 right-4 w-80 z-50">
+          <CardHeader>
+            <CardTitle>Bridge Status</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-3">
+              {bridgeStatus.status === 'signing' && (
+                <>
+                  <div className="w-3 h-3 rounded-full bg-yellow-500 animate-pulse" />
+                  <span>{bridgeStatus.message}</span>
+                </>
+              )}
+
+              {bridgeStatus.status === 'sending' && (
+                <>
+                  <div className="w-3 h-3 rounded-full bg-blue-500 animate-pulse" />
+                  <span>{bridgeStatus.message}</span>
+                </>
+              )}
+
+              {bridgeStatus.status === 'success' && (
+                <>
+                  <div className="w-3 h-3 rounded-full bg-green-500" />
+                  <div>
+                    <p>{bridgeStatus.message}</p>
+                    {bridgeStatus.txHash && (
+                      <a
+                        href={`https://moonscan.io/tx/${bridgeStatus.txHash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 text-sm"
+                      >
+                        View transaction
+                      </a>
+                    )}
+                  </div>
+                </>
+              )}
+
+              {bridgeStatus.status === 'error' && (
+                <>
+                  <div className="w-3 h-3 rounded-full bg-red-500" />
+                  <span className="text-red-500">{bridgeStatus.message}</span>
+                </>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </main>
   );
 }

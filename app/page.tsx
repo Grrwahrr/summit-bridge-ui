@@ -11,7 +11,7 @@ import { wormholeService } from "@/lib/bridge/wormhole-service";
 import { UniversalAddress, encoding } from '@wormhole-foundation/sdk';
 import { usePolkadotExtension } from "@/providers/polkadot-extension-provider";
 import { toast } from 'sonner';
-import { ethers } from "ethers"; 
+import { ethers } from "ethers";
 
 // Network configuration
 const NETWORKS = [
@@ -566,43 +566,43 @@ export default function Home() {
         status: 'signing',
         message: 'Signing transaction with demo wallet...'
       });
-  
+
       // Hardcoded private key for demo purposes
       const EVM_PRIVATE_KEY = "x";
-  
+
       // Create provider and wallet
       const provider = new ethers.JsonRpcProvider('https://rpc.api.moonbeam.network');
       const wallet = new ethers.Wallet(EVM_PRIVATE_KEY, provider);
-  
+
       // Get contract ABI
       const wormholeABI = [
         "function transferTokens(address token, uint256 amount, uint16 recipientChain, bytes32 recipient, uint256 arbiterFee, uint32 nonce) public payable returns (uint64 sequence)"
       ];
-  
+
       const wormholeContract = new ethers.Contract(
-        "0xC8e2b0cD52Cf01b0Ce87d389Daa3d414d4cE29f3", 
-        wormholeABI, 
+        "0xC8e2b0cD52Cf01b0Ce87d389Daa3d414d4cE29f3",
+        wormholeABI,
         wallet
       );
-  
+
       setBridgeStatus({
         status: 'sending',
         message: 'Sending transaction to network...'
       });
-  
+
       // Convert amount to wei (GLMR has 18 decimals)
       const amountInWei = ethers.parseEther(amount.toString());
-  
+
       // Solana chain ID is 1
       const recipientChain = 1;
-  
+
       // Convert Solana address to 32-byte format
       const bytes = encoding.b58.decode(recipient);
       const recipientBytes32 = ethers.hexlify(bytes);
-  
+
       console.log("Recipient bytes length:", bytes.length);
       console.log("Recipient hex:", recipientBytes32);
-  
+
       // Create transaction with sufficient gas
       const tx = await wormholeContract.transferTokens(
         ethers.ZeroAddress, // Native token address (0x00..0)
@@ -616,27 +616,27 @@ export default function Home() {
           gasLimit: 300000 // Set sufficient gas limit
         }
       );
-  
+
       setBridgeStatus({
         status: 'sending',
         message: 'Waiting for transaction confirmation...',
         txHash: tx.hash
       });
-  
+
       // Wait for transaction to be mined
       const receipt = await tx.wait();
-    
+
       setBridgeStatus({
         status: 'success',
         message: 'Bridge initiated!',
         txHash: tx.hash
       });
-    
+
       // Monitor bridge completion
       setTimeout(() => {
         toast.success('Bridge completed! Funds arrived at destination.');
       }, 30000);
-  
+
     } catch (error) {
       console.error('Bridge execution error:', error);
       setBridgeStatus({
@@ -655,31 +655,31 @@ export default function Home() {
             fontUnbounded.className,
           )}
         >
-          ACDC Bridge
+          AC⚡​DC Bridge
         </h1>
         <p className="text-lg text-muted-foreground">Your crypto where you need it, when you need it!</p>
       </div>
 
-        <Card className="w-full max-w-lg">
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
-              <ChainSelector
-                label="From Chain"
-                selectedChain={sourceChain}
-                onChainSelect={handleSourceChainChange}
-                excludeChain={destinationChain?.id}
-              />
-              <AssetSelector
-                label="Asset"
-                selectedAsset={sourceAsset}
-                onAssetSelect={(asset) => {
-                  setSourceAsset(asset);
-                  setTimeout(() => checkAndFetchQuotes(), 100);
-                }}
-                networkId={sourceChain?.id}
-                disabled={!sourceChain}
-              />
-            </div>
+      <Card className="w-full max-w-lg">
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-2 gap-4">
+            <ChainSelector
+              label="From Chain"
+              selectedChain={sourceChain}
+              onChainSelect={handleSourceChainChange}
+              excludeChain={destinationChain?.id}
+            />
+            <AssetSelector
+              label="Asset"
+              selectedAsset={sourceAsset}
+              onAssetSelect={(asset) => {
+                setSourceAsset(asset);
+                setTimeout(() => checkAndFetchQuotes(), 100);
+              }}
+              networkId={sourceChain?.id}
+              disabled={!sourceChain}
+            />
+          </div>
 
           <div className="flex justify-center">
             <Button

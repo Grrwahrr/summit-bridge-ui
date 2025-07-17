@@ -3,10 +3,10 @@ import Image from "next/image";
 import { ChevronDown } from "lucide-react";
 
 import { NavMobileControl } from "./nav-mobile-control";
-import { PolkadotLogo } from "../ui/polkadot-logo";
 import { ThemeToggle } from "./theme-toggle";
 import { ChainSelect } from "../chain/chain-select";
 import { WalletSelect } from "../account/wallet-select";
+import { EthereumWalletSelect } from "../account/ethereum-wallet-select";
 
 export interface NavItem {
   title: string;
@@ -41,6 +41,7 @@ export function NavBar() {
             <ThemeToggle />
             <ChainSelect />
             <WalletSelect />
+            <EthereumWalletSelect />
             <NavMobileControl items={navItems} />
           </div>
 
@@ -89,6 +90,7 @@ export function NavBar() {
             <ThemeToggle />
             <ChainSelect />
             <WalletSelect />
+            <EthereumWalletSelect />
           </div>
         </div>
       </div>

@@ -650,15 +650,7 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen p-6 sm:p-8 pb-20 flex-col gap-8 items-center justify-center relative">
-      <div className="text-center space-y-4">
-        <h1
-          className={cn(
-            "text-5xl lg:text-6xl leading-[1.2] bg-clip-text text-transparent bg-gradient-to-r from-foreground/70 via-foreground to-foreground/70",
-            fontUnbounded.className,
-          )}
-        >
-          ACDC
-        </h1>
+      <div className="text-center space-y-1">
         <p className="text-lg text-muted-foreground">Your crypto where you need it, when you need it!</p>
       </div>
 
@@ -848,8 +840,8 @@ export default function Home() {
                         });
 
                         // Determine if this quote should be recommended based on current sorting
-                        const isRecommended = sortBy === 'tokensReceived' 
-                          ? quote.id === topValueQuote.id 
+                        const isRecommended = sortBy === 'tokensReceived'
+                          ? quote.id === topValueQuote.id
                           : quote.id === fastestQuote.id;
 
                         return (

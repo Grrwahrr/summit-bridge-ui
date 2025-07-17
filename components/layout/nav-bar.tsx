@@ -33,6 +33,10 @@ export function NavBar() {
               height={50}
               className="object-contain"
             />
+            <div className="flex flex-col">
+              <span className="text-s text-yellow-400 font-medium leading-tight">Accelerate Crypto.</span>
+              <span className="text-s text-yellow-400 font-medium leading-tight">Distribute Currency.</span>
+            </div>
           </Link>
 
           {/* Mobile menu control - includes both toggle button and menu */}

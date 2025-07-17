@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronDown } from "lucide-react";
 
 import { NavMobileControl } from "./nav-mobile-control";
@@ -14,16 +15,8 @@ export interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  {
-    title: "",
-    href: "/",
-    items: [],
-  },
-  {
-    title: "",
-    href: "/",
-    items: [],
-  },
+  // Empty nav items removed to prevent duplicate key errors
+  // Add actual navigation items here when needed
 ];
 
 export function NavBar() {
@@ -33,11 +26,14 @@ export function NavBar() {
       <div className="px-6 sm:px-8 flex h-16 items-center justify-between">
         <div className="flex w-full items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-end flex-col">
-            <PolkadotLogo withPoweredBy={false} />
-            <span className="text-[10px] sm:text-[13px] font-light mr-1 -mt-1.5">
-              Bridge
-            </span>
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="/acdc_logo_no_bg.png"
+              alt="ACDC Logo"
+              width={100}
+              height={50}
+              className="object-contain"
+            />
           </Link>
 
           {/* Mobile menu control - includes both toggle button and menu */}

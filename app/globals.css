@@ -76,7 +76,24 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --solana-purple: #9945FF;
+  --solana-green: #14F195;
 }
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.bg-solana-purple { background-color: #9945FF; }
+.bg-solana-green { background-color: #14F195; }
+.text-solana-purple { color: #9945FF; }
+.text-solana-green { color: #14F195; }
 
 .dark {
   --background: oklch(0.145 0 0);

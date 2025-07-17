@@ -15,7 +15,6 @@ export interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  // Empty nav items removed to prevent duplicate key errors
   // Add actual navigation items here when needed
 ];
 

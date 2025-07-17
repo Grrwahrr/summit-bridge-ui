@@ -10,6 +10,7 @@ import { useRef, useState } from "react";
 import { wormholeService } from "@/lib/bridge/wormhole-service";
 import { UniversalAddress, encoding } from '@wormhole-foundation/sdk';
 import { usePolkadotExtension } from "@/providers/polkadot-extension-provider";
+import { useEthereum } from "@/providers/ethereum-provider";
 import { toast } from 'sonner';
 import { ethers } from "ethers";
 
@@ -319,6 +320,7 @@ function AssetSelector({
 
 export default function Home() {
   const { selectedAccount, isInitializing } = usePolkadotExtension();
+  const { account: ethAccount, signer, isConnected: isEthConnected } = useEthereum();
   const [sourceChain, setSourceChain] = useState<Network | null>(null);
   const [destinationChain, setDestinationChain] = useState<Network | null>(null);
   const [sourceAsset, setSourceAsset] = useState<Asset | null>(null);
@@ -561,28 +563,28 @@ export default function Home() {
     amount: number,
     recipient: string
   ) => {
+    // Check if Ethereum wallet is connected
+    if (!isEthConnected || !signer) {
+      toast.error('Please connect your Ethereum wallet first');
+      return;
+    }
+
     try {
       setBridgeStatus({
         status: 'signing',
-        message: 'Signing transaction with demo wallet...'
+        message: 'Preparing transaction with connected wallet...'
       });
-
-      // Hardcoded private key for demo purposes
-      const EVM_PRIVATE_KEY = "x";
-
-      // Create provider and wallet
-      const provider = new ethers.JsonRpcProvider('https://rpc.api.moonbeam.network');
-      const wallet = new ethers.Wallet(EVM_PRIVATE_KEY, provider);
 
       // Get contract ABI
       const wormholeABI = [
         "function transferTokens(address token, uint256 amount, uint16 recipientChain, bytes32 recipient, uint256 arbiterFee, uint32 nonce) public payable returns (uint64 sequence)"
       ];
 
+      // Create contract instance with the connected wallet's signer
       const wormholeContract = new ethers.Contract(
         "0xC8e2b0cD52Cf01b0Ce87d389Daa3d414d4cE29f3",
         wormholeABI,
-        wallet
+        signer
       );
 
       setBridgeStatus({
@@ -655,7 +657,7 @@ export default function Home() {
             fontUnbounded.className,
           )}
         >
-          AC⚡​DC Bridge
+          ACDC
         </h1>
         <p className="text-lg text-muted-foreground">Your crypto where you need it, when you need it!</p>
       </div>

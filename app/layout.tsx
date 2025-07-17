@@ -13,8 +13,8 @@ import "./globals.css";
 import { NavBar } from "@/components/layout/nav-bar";
 
 export const metadata: Metadata = {
-  title: "ACDC Bridge Aggregator",
-  description: "ACDC Bridge Aggregator",
+  title: "ACDC",
+  description: "ACDC",
 };
 
 export default function RootLayout({

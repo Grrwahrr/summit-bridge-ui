@@ -1,4 +1,4 @@
-# Summit Bridge UI
+# AC DC Bridge UI
 
 A frontend to aggregate cross-chain bridge quotes directly via TypeScript SDKs (no REST needed).
 
@@ -19,7 +19,7 @@ pnpm dev
 
 ## Overview
 
-Summit Bridge UI queries current swap quotes from multiple bridge SDKs:
+AC DC Bridge UI queries current swap quotes from multiple bridge SDKs:
 
 * **Wormhole Connect** (via `@wormhole-foundation/sdk` + plugins)
 * **Rhino.fi** (via their official TypeScript SDK)

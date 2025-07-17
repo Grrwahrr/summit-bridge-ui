@@ -417,14 +417,14 @@ export default function Home() {
         let newQuote: BridgeQuote;
 
         if (provider.id === 'wormhole') {
-          // Use real Wormhole API for Wormhole quotes (always Moonbeam GLMR -> Solana USDC)
+          // Use real Wormhole API for quotes with the selected chains and tokens
           try {
             const wormholeQuote = await wormholeService.getQuote(
               currentAmount,
-              'moonbeam',
-              'solana',
-              'GLMR',
-              'SOL'
+              sourceChain?.id || 'moonbeam',
+              destinationChain?.id || 'solana',
+              sourceAsset?.symbol || 'GLMR',
+              destinationAsset?.symbol || 'SOL'
             );
 
             console.log("quote received: ", wormholeQuote);

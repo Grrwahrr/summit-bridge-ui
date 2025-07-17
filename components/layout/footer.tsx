@@ -26,7 +26,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-3">
             <Link href="/" className="text-2xl font-bold dark:text-white">
-              ACDC
+               
             </Link>
           </div>
           {footerLinks.map((category) => (

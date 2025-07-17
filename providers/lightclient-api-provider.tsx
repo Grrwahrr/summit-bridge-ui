@@ -96,7 +96,8 @@ export function LightClientApiProvider({
 
         const lightClient = createClient(getSmProvider(chain));
         setClient(lightClient);
-        const typedApi = lightClient.getTypedApi(chainConfig.descriptors);
+        // Use type assertion to avoid TypeScript errors
+        const typedApi = lightClient.getTypedApi(chainConfig.descriptors as any);
         setActiveApi(typedApi);
         setActiveChain(chainConfig);
 

@@ -32,12 +32,6 @@ export interface WormholeQuote {
 }
 
 export class WormholeService {
-  private wh: Wormhole<any>;
-
-  constructor() {
-    // Initialize Wormhole with EVM and Solana platforms
-    this.wh = wormhole('Mainnet', [evm, solana]);
-  }
 
   async getQuote(
     amount: number,
@@ -87,7 +81,7 @@ export class WormholeService {
     walletAddress: string
   ): Promise<bigint> {
     try {
-      const chain = this.wh.getChain(chainName as any);
+      const chain = null;
       // This would implement actual balance checking
       // For now, return a mock balance
       return BigInt(1000000000); // 1000 tokens with 6 decimals

@@ -10,7 +10,8 @@ export function EthereumWalletSelect() {
   const { isConnected, isConnecting, account, chainId, connect, disconnect } = useEthereum();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const formatAddress = (address: string) => {
+  const formatAddress = (address: string | null) => {
+    if (!address) return 'Unknown';
     return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
   };
 
@@ -117,8 +118,11 @@ export function EthereumWalletSelect() {
                 </button>
                 <button
                   onClick={() => {
-                    window.open(`https://etherscan.io/address/${account}`, '_blank');
+                    if (account) {
+                      window.open(`https://etherscan.io/address/${account}`, '_blank');
+                    }
                   }}
+                  disabled={!account}
                   className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
                   View on Explorer

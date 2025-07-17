@@ -41,7 +41,7 @@ export function EthereumProvider({ children }: { children: ReactNode }) {
 
   // Initialize provider on component mount
   useEffect(() => {
-    if (isMetaMaskInstalled()) {
+    if (isMetaMaskInstalled() && window.ethereum) {
       const ethereumProvider = new ethers.BrowserProvider(window.ethereum);
       setProvider(ethereumProvider);
 
@@ -102,15 +102,15 @@ export function EthereumProvider({ children }: { children: ReactNode }) {
     };
 
     // Add event listeners
-    window.ethereum.on('accountsChanged', handleAccountsChanged);
-    window.ethereum.on('chainChanged', handleChainChanged);
-    window.ethereum.on('disconnect', handleDisconnect);
+    window.ethereum?.on('accountsChanged', handleAccountsChanged);
+    window.ethereum?.on('chainChanged', handleChainChanged);
+    window.ethereum?.on('disconnect', handleDisconnect);
 
     // Clean up event listeners
     return () => {
-      window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
-      window.ethereum.removeListener('chainChanged', handleChainChanged);
-      window.ethereum.removeListener('disconnect', handleDisconnect);
+      window.ethereum?.removeListener('accountsChanged', handleAccountsChanged);
+      window.ethereum?.removeListener('chainChanged', handleChainChanged);
+      window.ethereum?.removeListener('disconnect', handleDisconnect);
     };
   }, [provider, account]);
 
@@ -131,7 +131,7 @@ export function EthereumProvider({ children }: { children: ReactNode }) {
 
     try {
       // Request account access
-      const accounts = await window.ethereum.request({ 
+      const accounts = await window.ethereum?.request({ 
         method: 'eth_requestAccounts' 
       });
       

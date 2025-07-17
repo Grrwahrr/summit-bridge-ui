@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Quote, QuoteRequest, BridgeProvider } from '@/lib/bridge/types';
-import { quoteService } from '@/lib/bridge/quote-service';
+import { QuoteService } from '@/lib/bridge/quote-service';
 import { BridgeException } from '@/lib/bridge/errors';
 
 interface UseQuotesOptions {
@@ -53,8 +53,8 @@ export function useQuotes(options: UseQuotesOptions = {}): UseQuotesReturn {
       setLastRequest(request);
 
       try {
-        const newQuotes = await quoteService.getQuotes(request);
-        setQuotes(newQuotes);
+        //const newQuotes = await quoteService.getQuotes(request);
+        //setQuotes(newQuotes);
       } catch (err) {
         const errorMessage = err instanceof BridgeException 
           ? err.message 
@@ -79,8 +79,8 @@ export function useQuotes(options: UseQuotesOptions = {}): UseQuotesReturn {
     setError(null);
 
     try {
-      const newQuotes = await quoteService.getQuotes(lastRequest);
-      setQuotes(newQuotes);
+      //const newQuotes = await quoteService.getQuotes(lastRequest);
+      //setQuotes(newQuotes);
     } catch (err) {
       const errorMessage = err instanceof BridgeException 
         ? err.message 

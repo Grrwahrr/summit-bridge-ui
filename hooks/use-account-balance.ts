@@ -21,10 +21,14 @@ export function useAccountBalance() {
 
   useEffect(() => {
     if (!selectedAccount || !api) return;
-    const subscription = api?.query.System.Account.watchValue(
-      selectedAccount?.address,
+    
+    // Use type assertion to tell TypeScript about the structure
+    const systemQuery = api.query as any;
+    
+    const subscription = systemQuery.System.Account.watchValue(
+      selectedAccount.address,
       "best",
-    ).subscribe((value) => {
+    ).subscribe((value: any) => {
       console.log("value", value);
       setAccountBalance({
         ...value.data,
